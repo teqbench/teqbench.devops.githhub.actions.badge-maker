@@ -35,7 +35,7 @@ export async function run(): Promise<void> {
     const inputBadgeType: string = core.getInput('badge-type')
     const inputLabel: string = core.getInput('label')
     const inputMessage: string = core.getInput('message')
-    const inputBadgeStyleType: string = core.getInput('badge-style-type')
+    const inputBadgeStyleType: string = core.getInput('badge-style')
 
     // TypeScript does not have anyting like ENUM.TryParse and does not throw an
     // error when trying to cast a string to the enum. Created stringToEnum as a workaround
