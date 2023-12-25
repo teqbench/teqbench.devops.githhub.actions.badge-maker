@@ -4789,12 +4789,6 @@ async function run() {
         if (badgeStyleType === null) {
             throw new Error('Badge style type invalid.');
         }
-        let validateInputLabel = function (value) {
-            return validateValue(value, 'label');
-        };
-        let validateInputMessage = function (value) {
-            return validateValue(value, 'message');
-        };
         let label = '';
         let message = '';
         switch (badgeType) {
@@ -4828,7 +4822,7 @@ async function run() {
                 const inputBadgeTimestampTimezoneType = core.getInput('timestamp-timezone');
                 const badgeBadgeTimestampTimezoneType = stringToBadgeTimestampTimezoneType(inputBadgeTimestampTimezoneType);
                 stringToBadgeTimestampTimezoneType;
-                let options = {
+                const options = {
                     timeZone: badgeBadgeTimestampTimezoneType?.toString()
                 };
                 message = new Intl.DateTimeFormat(badgeBadgeTimestampFormatType?.toString(), options).format(new Date());
@@ -4866,9 +4860,9 @@ async function run() {
             }
         }
         const format = {
-            label: label,
-            message: message,
-            color: color,
+            label,
+            message,
+            color,
             // The style property of the Format type is defined using an inline type def. Make sure to force
             // to lowercase in order to cast.
             style: badgeStyleType.toLocaleLowerCase()
@@ -4932,9 +4926,15 @@ function stringToBadgeTimestampTimezoneType(value) {
 }
 function validateValue(value, name) {
     if (value === null || value.trim().length === 0) {
-        throw new Error('A ' + name + ' is required.');
+        throw new Error(`A ${name} is required.`);
     }
     return value.trim();
+}
+function validateInputLabel(value) {
+    return validateValue(value, 'label');
+}
+function validateInputMessage(value) {
+    return validateValue(value, 'message');
 }
 
 

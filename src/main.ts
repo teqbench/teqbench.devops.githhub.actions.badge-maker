@@ -86,16 +86,8 @@ export async function run(): Promise<void> {
       throw new Error('Badge style type invalid.')
     }
 
-    let validateInputLabel: (value: string) => string = function (value) {
-      return validateValue(value, 'label')
-    }
-
-    let validateInputMessage: (value: string) => string = function (value) {
-      return validateValue(value, 'message')
-    }
-
-    let label: string = ''
-    let message: string = ''
+    let label = ''
+    let message = ''
 
     switch (badgeType) {
       case BadgeType.SUCCESS:
@@ -137,7 +129,7 @@ export async function run(): Promise<void> {
           stringToBadgeTimestampTimezoneType(inputBadgeTimestampTimezoneType)
 
         stringToBadgeTimestampTimezoneType
-        let options = {
+        const options = {
           timeZone: badgeBadgeTimestampTimezoneType?.toString()
         }
 
@@ -159,7 +151,7 @@ export async function run(): Promise<void> {
     }
 
     // Determine badge's message color based on the supplied badge type.
-    let color: string = 'gray'
+    let color = 'gray'
 
     switch (badgeType) {
       case BadgeType.SUCCESS:
@@ -188,9 +180,9 @@ export async function run(): Promise<void> {
     }
 
     const format: Format = {
-      label: label,
-      message: message,
-      color: color,
+      label,
+      message,
+      color,
 
       // The style property of the Format type is defined using an inline type def. Make sure to force
       // to lowercase in order to cast.
@@ -279,8 +271,16 @@ function stringToBadgeTimestampTimezoneType(
 
 function validateValue(value: string, name: string): string {
   if (value === null || value.trim().length === 0) {
-    throw new Error('A ' + name + ' is required.')
+    throw new Error(`A ${name} is required.`)
   }
 
   return value.trim()
+}
+
+function validateInputLabel(value: string): string {
+  return validateValue(value, 'label')
+}
+
+function validateInputMessage(value: string): string {
+  return validateValue(value, 'message')
 }
