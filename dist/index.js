@@ -4748,7 +4748,7 @@ async function run() {
         const inputBadgeType = core.getInput('badge-type');
         const inputLabel = core.getInput('label');
         const inputMessage = core.getInput('message');
-        const inputBadgeStyleType = core.getInput('badge-style-type');
+        const inputBadgeStyleType = core.getInput('badge-style');
         // TypeScript does not have anyting like ENUM.TryParse and does not throw an
         // error when trying to cast a string to the enum. Created stringToEnum as a workaround
         // to convert a string to an enum. If fails, returns a null.

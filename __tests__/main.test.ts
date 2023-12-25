@@ -226,7 +226,7 @@ describe('action', () => {
           return 'build'
         case 'message':
           return 'success'
-        case 'badge-style-type':
+        case 'badge-style':
           return 'plastic'
         default:
           return ''
@@ -256,7 +256,7 @@ describe('action', () => {
           return 'build'
         case 'message':
           return 'success'
-        case 'badge-style-type':
+        case 'badge-style':
           return 'flat'
         default:
           return ''
@@ -286,7 +286,7 @@ describe('action', () => {
           return 'build'
         case 'message':
           return 'success'
-        case 'badge-style-type':
+        case 'badge-style':
           return 'flat-square'
         default:
           return ''
@@ -316,7 +316,7 @@ describe('action', () => {
           return 'build'
         case 'message':
           return 'success'
-        case 'badge-style-type':
+        case 'badge-style':
           return 'for-the-badge'
         default:
           return ''
@@ -346,7 +346,7 @@ describe('action', () => {
           return 'build'
         case 'message':
           return 'success'
-        case 'badge-style-type':
+        case 'badge-style':
           return 'social'
         default:
           return ''
@@ -376,7 +376,7 @@ describe('action', () => {
           return 'build'
         case 'message':
           return 'success'
-        case 'badge-style-type':
+        case 'badge-style':
           return '' // is still valid. defaults to for-the-badge
         default:
           return ''
@@ -410,7 +410,7 @@ describe('action', () => {
             return 'build'
           case 'message':
             return 'success'
-          case 'badge-style-type':
+          case 'badge-style':
             return 'invalid'
           default:
             return ''
@@ -439,7 +439,7 @@ describe('action', () => {
             return 'build'
           case 'message':
             return 'success'
-          case 'badge-style-type':
+          case 'badge-style':
             return null
           default:
             return ''
