@@ -16,6 +16,12 @@ inputs:
   badge-style:
     description: "The style to use when creating the badge. Options: plastic, flat, flat-square, for-the-badge (default), social"
     required: false
+  timestamp-format:
+    description: "The datetime format to use when creating a timestamp badge. Options: see exhaustive list in BadgeDateTimeFormatType."
+    required: false
+  timestamp-timezone:
+    description: "The datetime timezone to use when creating a timestamp badge. Options: see exhaustive list in BadgeDateTimeFormatType."
+    required: false
 
 # Define your outputs here.
 outputs:
