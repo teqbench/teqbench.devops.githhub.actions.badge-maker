@@ -4731,6 +4731,14 @@ var BadgeType;
     BadgeType["FAILURE"] = "FAILURE";
     BadgeType["INFORMATION"] = "INFORMATION"; // Blue
 })(BadgeType || (BadgeType = {}));
+var BadgeStyleType;
+(function (BadgeStyleType) {
+    BadgeStyleType["PLASTIC"] = "PLASTIC";
+    BadgeStyleType["FLAT"] = "FLAT";
+    BadgeStyleType["FLAT_SQUARE"] = "FLAT-SQUARE";
+    BadgeStyleType["FOR_THE_BADGE"] = "FOR-THE-BADGE";
+    BadgeStyleType["SOCIAL"] = "SOCIAL";
+})(BadgeStyleType || (BadgeStyleType = {}));
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -4740,10 +4748,12 @@ async function run() {
         const inputBadgeType = core.getInput('badge-type');
         const inputLabel = core.getInput('label');
         const inputMessage = core.getInput('message');
+        const inputBadgeStyleType = core.getInput('badge-style-type');
         // TypeScript does not have anyting like ENUM.TryParse and does not throw an
         // error when trying to cast a string to the enum. Created stringToEnum as a workaround
         // to convert a string to an enum. If fails, returns a null.
-        const badgeType = stringToEnum(inputBadgeType);
+        const badgeType = stringToBadgeTypeEnum(inputBadgeType);
+        const badgeStyleType = stringToBadgeStyleTypeEnum(inputBadgeStyleType);
         if (badgeType === null) {
             throw new Error('Badge type invalid.');
         }
@@ -4752,6 +4762,9 @@ async function run() {
         }
         if (inputMessage === null || inputMessage.trim().length === 0) {
             throw new Error('A message is required.');
+        }
+        if (badgeStyleType === null) {
+            throw new Error('Badge style type invalid.');
         }
         let messageColor = 'gray';
         switch (badgeType) {
@@ -4771,9 +4784,13 @@ async function run() {
         const format = {
             label: inputLabel,
             message: inputMessage,
-            color: messageColor
+            color: messageColor,
+            // The style property of the Format type is defined using an inline type def. Make sure to force
+            // to lowercase in order to cast.
+            style: badgeStyleType.toLocaleLowerCase()
         };
         const svg = (0, badge_maker_1.makeBadge)(format);
+        console.log(svg);
         // Set outputs for other workflow steps to use
         core.setOutput('svg', svg);
     }
@@ -4786,9 +4803,19 @@ async function run() {
     }
 }
 exports.run = run;
-function stringToEnum(value) {
-    const uc = value.toUpperCase();
+function stringToBadgeTypeEnum(value) {
+    const uc = (value ?? '').toUpperCase().trim();
     if (Object.values(BadgeType).findIndex(x => x === uc) >= 0) {
+        return uc;
+    }
+    return null;
+}
+function stringToBadgeStyleTypeEnum(value) {
+    const uc = (value ?? '').toUpperCase().trim();
+    if (uc === '') {
+        return BadgeStyleType.FOR_THE_BADGE;
+    }
+    else if (Object.values(BadgeStyleType).findIndex(x => x === uc) >= 0) {
         return uc;
     }
     return null;

@@ -1,11 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Add your action's branding here. This will appear on the GitHub Marketplace.
-branding:
-  icon: 'heart'
-  color: 'red'
+name: 'Badge Image Maker'
+description: 'Creates an SVG image string from the supplied parameters.'
+author: 'TeqBench'
 
 # Define your inputs here.
 inputs:
@@ -18,6 +13,9 @@ inputs:
   message:
     description: "The message of the badge."
     required: true
+  badge-style:
+    description: "The style to use when creating the badge. Options: plastic, flat, flat-square, for-the-badge (default), social"
+    required: false
 
 # Define your outputs here.
 outputs:
