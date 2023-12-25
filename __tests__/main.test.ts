@@ -12,78 +12,180 @@ import * as main from '../src/main'
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
-// Other utilities
-const timeRegex = /^\d{2}:\d{2}:\d{2}/
-
 // Mock the GitHub Actions core library
-let debugMock: jest.SpyInstance
 let errorMock: jest.SpyInstance
 let getInputMock: jest.SpyInstance
-let setFailedMock: jest.SpyInstance
 let setOutputMock: jest.SpyInstance
 
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    debugMock = jest.spyOn(core, 'debug').mockImplementation()
     errorMock = jest.spyOn(core, 'error').mockImplementation()
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
-    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
     setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
   })
 
-  it('sets the time output', async () => {
+  it('badge type success', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
       switch (name) {
-        case 'milliseconds':
-          return '500'
+        case 'badge-type':
+          return 'SUCCESS'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'success'
         default:
           return ''
       }
     })
 
     await main.run()
+
     expect(runMock).toHaveReturned()
 
-    // Verify that all of the core library functions were called correctly
-    expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...')
-    expect(debugMock).toHaveBeenNthCalledWith(
-      2,
-      expect.stringMatching(timeRegex)
-    )
-    expect(debugMock).toHaveBeenNthCalledWith(
-      3,
-      expect.stringMatching(timeRegex)
-    )
     expect(setOutputMock).toHaveBeenNthCalledWith(
       1,
-      'time',
-      expect.stringMatching(timeRegex)
+      'svg',
+      expect.stringContaining('svg')
     )
+
     expect(errorMock).not.toHaveBeenCalled()
   })
 
-  it('sets a failed status', async () => {
+  it('badge type failure', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
       switch (name) {
-        case 'milliseconds':
-          return 'this is not a number'
+        case 'badge-type':
+          return 'FAILURE'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'failure'
         default:
           return ''
       }
     })
 
     await main.run()
+
     expect(runMock).toHaveReturned()
 
-    // Verify that all of the core library functions were called correctly
-    expect(setFailedMock).toHaveBeenNthCalledWith(
+    expect(setOutputMock).toHaveBeenNthCalledWith(
       1,
-      'milliseconds not a number'
+      'svg',
+      expect.stringContaining('svg')
     )
+
     expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type information', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'INFORMATION'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'info'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type invalid', async () => {
+    try {
+      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
+      // for how to test promises that throw errors.
+
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string => {
+        switch (name) {
+          case 'badge-type':
+            return 'invalid'
+          case 'label':
+            return 'build'
+          case 'message':
+            return 'info'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      expect(e).toEqual({
+        code: 'invalid'
+      })
+    }
+  })
+
+  it('badge label missing', async () => {
+    try {
+      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
+      // for how to test promises that throw errors.
+
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string => {
+        switch (name) {
+          case 'badge-type':
+            return 'SUCCESS'
+          case 'message':
+            return 'info'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      console.log(e)
+      expect(e).toEqual({
+        code: 'A label is required.'
+      })
+    }
+  })
+
+  it('badge message missing', async () => {
+    try {
+      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
+      // for how to test promises that throw errors.
+
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string => {
+        switch (name) {
+          case 'badge-type':
+            return 'SUCCESS'
+          case 'label':
+            return 'Build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      console.log(e)
+      expect(e).toEqual({
+        code: 'A message is required.'
+      })
+    }
   })
 })

@@ -9,15 +9,20 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  badge-type:
+    description: "Type of badge to create. Options: SUCCESS, FAILURE, INFORMATION"
     required: true
-    default: '1000'
+  label:
+    description: "The label of the badge."
+    required: true
+  message:
+    description: "The message of the badge."
+    required: true
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  svg:
+    description: 'The new badge svg image as a string.'
 
 runs:
   using: node20

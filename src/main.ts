@@ -1,5 +1,22 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { Format, makeBadge, ValidationError } from 'badge-maker'
+
+// import { wait } from './wait'
+
+// label: 'build',  // (Optional) Badge label
+// message: 'passed',  // (Required) Badge message
+// labelColor: '#555',  // (Optional) Label color
+// color: '#4c1',  // (Optional) Message color
+
+// // (Optional) One of: 'plastic', 'flat', 'flat-square', 'for-the-badge' or 'social'
+// // Each offers a different visual design.
+// style: 'flat',
+
+enum BadgeType {
+  SUCCESS = 'SUCCESS', // GREEN
+  FAILURE = 'FAILURE', // Red
+  INFORMATION = 'INFORMATION' // Blue
+}
 
 /**
  * The main function for the action.
@@ -7,20 +24,71 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const inputBadgeType: string = core.getInput('badge-type')
+    const inputLabel: string = core.getInput('label')
+    const inputMessage: string = core.getInput('message')
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    // TypeScript does not have anyting like ENUM.TryParse and does not throw an
+    // error when trying to cast a string to the enum. Created stringToEnum as a workaround
+    // to convert a string to an enum. If fails, returns a null.
+    const badgeType: BadgeType | null = stringToEnum(inputBadgeType)
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    if (badgeType === null) {
+      throw new Error('Badge type invalid.')
+    }
+
+    if (inputLabel === null || inputLabel.trim().length === 0) {
+      throw new Error('A label is required.')
+    }
+
+    if (inputMessage === null || inputMessage.trim().length === 0) {
+      throw new Error('A message is required.')
+    }
+
+    let messageColor: string = 'gray'
+
+    switch (badgeType) {
+      case BadgeType.SUCCESS: {
+        messageColor = 'brightgreen'
+
+        break
+      }
+      case BadgeType.FAILURE: {
+        messageColor = 'red'
+
+        break
+      }
+      case BadgeType.INFORMATION: {
+        messageColor = 'blue'
+
+        break
+      }
+    }
+
+    const format: Format = {
+      label: inputLabel,
+      message: inputMessage,
+      color: messageColor
+    }
+
+    const svg = makeBadge(format)
 
     // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    core.setOutput('svg', svg)
   } catch (error) {
+    console.log(error)
+
     // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.setFailed(error)
+    }
   }
+}
+
+function stringToEnum(value: string): BadgeType | null {
+  const uc: string = value.toUpperCase()
+  if (Object.values(BadgeType).findIndex(x => x === uc) >= 0) {
+    return uc as BadgeType
+  }
+  return null
 }
