@@ -111,6 +111,8 @@ describe('action', () => {
   })
 
   it('badge type invalid', async () => {
+    let err
+
     try {
       // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
       // for how to test promises that throw errors.
@@ -131,13 +133,15 @@ describe('action', () => {
 
       await main.run()
     } catch (e) {
-      expect(e).toEqual({
-        code: 'invalid'
-      })
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'Badge type invalid.')
     }
   })
 
   it('badge type null', async () => {
+    let err
+
     try {
       // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
       // for how to test promises that throw errors.
@@ -158,39 +162,44 @@ describe('action', () => {
 
       await main.run()
     } catch (e) {
-      expect(e).toEqual({
-        code: 'invalid'
-      })
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'Badge type invalid.')
     }
   })
 
   it('badge label missing', async () => {
-    try {
-      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-      // for how to test promises that throw errors.
+    // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
+    // for how to test promises that throw errors.
 
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'SUCCESS'
-          case 'message':
-            return 'info'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'SUCCESS'
+        case 'message':
+          return 'info'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    } catch (e) {
-      console.log(e)
-      expect(e).toEqual({
-        code: 'A label is required.'
-      })
-    }
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge message missing', async () => {
+    let err
+
     try {
       // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
       // for how to test promises that throw errors.
@@ -209,10 +218,9 @@ describe('action', () => {
 
       await main.run()
     } catch (e) {
-      console.log(e)
-      expect(e).toEqual({
-        code: 'A message is required.'
-      })
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
     }
   })
 
@@ -396,7 +404,9 @@ describe('action', () => {
     expect(errorMock).not.toHaveBeenCalled()
   })
 
-  it('badge style type invalid', async () => {
+  it('badge style invalid', async () => {
+    let err
+
     try {
       // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
       // for how to test promises that throw errors.
@@ -419,36 +429,42 @@ describe('action', () => {
 
       await main.run()
     } catch (e) {
-      expect(e).toEqual({
-        code: 'invalid'
-      })
+      err = e as Error
+    } finally {
+      expect(err).toHaveProperty('message', 'Badge style invalid.')
     }
   })
 
-  it('badge style type null', async () => {
-    try {
-      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-      // for how to test promises that throw errors.
+  it('badge style null', async () => {
+    // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
+    // for how to test promises that throw errors.
 
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'SUCCESS'
-          case 'label':
-            return 'build'
-          case 'message':
-            return 'success'
-          case 'badge-style':
-            return null
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'SUCCESS'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'success'
+        case 'badge-style':
+          return null
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    } catch (e) {
-      expect(e)
-    }
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
   })
 })

@@ -83,7 +83,7 @@ export async function run(): Promise<void> {
     }
 
     if (badgeStyleType === null) {
-      throw new Error('Badge style type invalid.')
+      throw new Error('Badge style invalid.')
     }
 
     let label = ''
@@ -196,17 +196,17 @@ export async function run(): Promise<void> {
 
     const svg = makeBadge(format)
 
-    console.log(svg)
+    // console.log(svg)
 
     // Set outputs for other workflow steps to use
     core.setOutput('svg', svg)
   } catch (error) {
-    console.log(error)
-
     // Fail the workflow run if an error occurs
     if (error instanceof Error) {
       core.setFailed(error)
     }
+
+    throw error
   }
 }
 

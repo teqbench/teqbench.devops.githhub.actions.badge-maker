@@ -4787,7 +4787,7 @@ async function run() {
             throw new Error('Badge type invalid.');
         }
         if (badgeStyleType === null) {
-            throw new Error('Badge style type invalid.');
+            throw new Error('Badge style invalid.');
         }
         let label = '';
         let message = '';
@@ -4868,16 +4868,16 @@ async function run() {
             style: badgeStyleType.toLocaleLowerCase()
         };
         const svg = (0, badge_maker_1.makeBadge)(format);
-        console.log(svg);
+        // console.log(svg)
         // Set outputs for other workflow steps to use
         core.setOutput('svg', svg);
     }
     catch (error) {
-        console.log(error);
         // Fail the workflow run if an error occurs
         if (error instanceof Error) {
             core.setFailed(error);
         }
+        throw error;
     }
 }
 exports.run = run;
