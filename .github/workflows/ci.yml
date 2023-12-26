@@ -57,7 +57,7 @@ jobs:
         with:
           badge-type: 'SUCCESS'
           label: 'build'
-          message: ''
+          message: 'a success message'
           badge-style: 'flat'
 
       - name: Print Output
