@@ -13,59 +13,71 @@ import * as main from '../src/main'
 const runMock = jest.spyOn(main, 'run')
 
 // Mock the GitHub Actions core library
+// let debugMock: jest.SpyInstance
 let errorMock: jest.SpyInstance
 let getInputMock: jest.SpyInstance
+let setFailedMock: jest.SpyInstance
 let setOutputMock: jest.SpyInstance
 
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
+    // debugMock = jest.spyOn(core, 'debug').mockImplementation()
     errorMock = jest.spyOn(core, 'error').mockImplementation()
     getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
+    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
     setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
   })
 
   it('badge type null', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return null
-          case 'label':
-            return 'build'
-          case 'message':
-            return 'info'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return null
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'info'
+        default:
+          return ''
+      }
+    })
 
-      return await main.run()
-    }).rejects.toThrow('Badge type invalid.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'Badge type invalid.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge style invalid', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'SUCCESS'
-          case 'label':
-            return 'build'
-          case 'message':
-            return 'success'
-          case 'badge-style':
-            return 'invalid'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'SUCCESS'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'success'
+        case 'badge-style':
+          return 'invalid'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('Badge style invalid.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'Badge style invalid.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type success with label and message', async () => {
@@ -125,41 +137,49 @@ describe('action', () => {
   })
 
   it('badge type success with label and no message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'SUCCESS'
-          case 'label':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'SUCCESS'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type success with label and null message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'SUCCESS'
-          case 'label':
-            return 'build'
-          case 'message':
-            return null
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'SUCCESS'
+        case 'label':
+          return 'build'
+        case 'message':
+          return null
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type failure with label and message', async () => {
@@ -219,41 +239,49 @@ describe('action', () => {
   })
 
   it('badge type failure with label and no message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'FAILURE'
-          case 'label':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILURE'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type failure with label and null message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'FAILURE'
-          case 'label':
-            return 'build'
-          case 'message':
-            return null
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILURE'
+        case 'label':
+          return 'build'
+        case 'message':
+          return null
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type passing with label and message', async () => {
@@ -553,79 +581,95 @@ describe('action', () => {
   })
 
   it('badge type information with no label and message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'INFORMATION'
-          case 'label':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'INFORMATION'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type information with label and no message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'INFORMATION'
-          case 'label':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'INFORMATION'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type information with label and null message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'INFORMATION'
-          case 'label':
-            return 'build'
-          case 'message':
-            return null
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'INFORMATION'
+        case 'label':
+          return 'build'
+        case 'message':
+          return null
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type information with null label and message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'INFORMATION'
-          case 'label':
-            return null
-          case 'message':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'INFORMATION'
+        case 'label':
+          return null
+        case 'message':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A label is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A label is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type warning with label and message', async () => {
@@ -657,79 +701,95 @@ describe('action', () => {
   })
 
   it('badge type warning with no label and message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'WARNING'
-          case 'label':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'WARNING'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type warning with label and no message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'WARNING'
-          case 'label':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'WARNING'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type warning with label and null message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'WARNING'
-          case 'label':
-            return 'build'
-          case 'message':
-            return null
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'WARNING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return null
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A message is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A message is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type warning with null label and message', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string | null => {
-        switch (name) {
-          case 'badge-type':
-            return 'WARNING'
-          case 'label':
-            return null
-          case 'message':
-            return 'build'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'WARNING'
+        case 'label':
+          return null
+        case 'message':
+          return 'build'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('A label is required.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(1, 'A label is required.')
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
@@ -767,107 +827,135 @@ describe('action', () => {
   })
 
   it('badge type datestamp with label, no message, invalid datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'DATESTAMP'
-          case 'label':
-            return 'build'
-          case 'datestamp-format':
-            return 'invalid'
-          case 'datestamp-timezone':
-            return 'US/Mountain'
-          case 'datestamp-datestyle':
-            return 'full'
-          case 'datestamp-timestyle':
-            return 'FULL'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'invalid'
+        case 'datestamp-timezone':
+          return 'US/Mountain'
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return 'FULL'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('Badge datestamp format invalid.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Badge datestamp format invalid.'
+    )
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type datestamp with label, no message, datestamp-format, invalid datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'DATESTAMP'
-          case 'label':
-            return 'build'
-          case 'datestamp-format':
-            return 'en-US'
-          case 'datestamp-timezone':
-            return 'invalid'
-          case 'datestamp-datestyle':
-            return 'full'
-          case 'datestamp-timestyle':
-            return 'FULL'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return 'invalid'
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return 'FULL'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('Badge datestamp timezone invalid.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Badge datestamp timezone invalid.'
+    )
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, invalid datestamp-datestyle, datestamp-timestyle', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'DATESTAMP'
-          case 'label':
-            return 'build'
-          case 'datestamp-format':
-            return 'en-US'
-          case 'datestamp-timezone':
-            return 'UTC'
-          case 'datestamp-datestyle':
-            return 'invalid'
-          case 'datestamp-timestyle':
-            return 'FULL'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return 'UTC'
+        case 'datestamp-datestyle':
+          return 'invalid'
+        case 'datestamp-timestyle':
+          return 'FULL'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('Badge datestamp date style invalid.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Badge datestamp date style invalid.'
+    )
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, invalid datestamp-timestyle', async () => {
-    await expect(async () => {
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'DATESTAMP'
-          case 'label':
-            return 'build'
-          case 'datestamp-format':
-            return 'en-US'
-          case 'datestamp-timezone':
-            return 'UTC'
-          case 'datestamp-datestyle':
-            return 'full'
-          case 'datestamp-timestyle':
-            return 'invalid'
-          default:
-            return ''
-        }
-      })
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return 'UTC'
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return 'invalid'
+        default:
+          return ''
+      }
+    })
 
-      await main.run()
-    }).rejects.toThrow('Badge datestamp time style invalid.')
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    // Verify that all of the core library functions were called correctly
+    expect(setFailedMock).toHaveBeenNthCalledWith(
+      1,
+      'Badge datestamp time style invalid.'
+    )
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge type datestamp with label, no message, null datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
