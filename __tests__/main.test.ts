@@ -27,12 +27,7 @@ describe('action', () => {
   })
 
   it('badge type null', async () => {
-    let err
-
-    try {
-      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-      // for how to test promises that throw errors.
-
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -47,21 +42,12 @@ describe('action', () => {
         }
       })
 
-      await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'Badge type invalid.')
-    }
+      return await main.run()
+    }).rejects.toThrow('Badge type invalid.')
   })
 
   it('badge style invalid', async () => {
-    let err
-
-    try {
-      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-      // for how to test promises that throw errors.
-
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -79,11 +65,7 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e as Error
-    } finally {
-      expect(err).toHaveProperty('message', 'Badge style invalid.')
-    }
+    }).rejects.toThrow('Badge style invalid.')
   })
 
   it('badge type success with label and message', async () => {
@@ -143,8 +125,7 @@ describe('action', () => {
   })
 
   it('badge type success with label and no message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -158,16 +139,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type success with label and null message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -183,11 +159,7 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type failure with label and message', async () => {
@@ -247,8 +219,7 @@ describe('action', () => {
   })
 
   it('badge type failure with label and no message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -262,16 +233,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type failure with label and null message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -287,11 +253,7 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type passing with label and message', async () => {
@@ -591,8 +553,7 @@ describe('action', () => {
   })
 
   it('badge type information with no label and message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -606,16 +567,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type information with label and no message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -629,16 +585,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type information with label and null message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -654,16 +605,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type information with null label and message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -679,11 +625,7 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A label is required.')
-    }
+    }).rejects.toThrow('A label is required.')
   })
 
   it('badge type warning with label and message', async () => {
@@ -715,8 +657,7 @@ describe('action', () => {
   })
 
   it('badge type warning with no label and message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -730,16 +671,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type warning with label and no message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -753,16 +689,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type warning with label and null message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -778,16 +709,11 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    }).rejects.toThrow('A message is required.')
   })
 
   it('badge type warning with null label and message', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string | null => {
         switch (name) {
@@ -803,11 +729,7 @@ describe('action', () => {
       })
 
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A label is required.')
-    }
+    }).rejects.toThrow('A label is required.')
   })
 
   it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
@@ -845,8 +767,7 @@ describe('action', () => {
   })
 
   it('badge type datestamp with label, no message, invalid datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -866,17 +787,13 @@ describe('action', () => {
             return ''
         }
       })
+
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'Badge datestamp format invalid.')
-    }
+    }).rejects.toThrow('Badge datestamp format invalid.')
   })
 
   it('badge type datestamp with label, no message, datestamp-format, invalid datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -896,17 +813,13 @@ describe('action', () => {
             return ''
         }
       })
+
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'Badge datestamp timezone invalid.')
-    }
+    }).rejects.toThrow('Badge datestamp timezone invalid.')
   })
 
   it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, invalid datestamp-datestyle, datestamp-timestyle', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -926,20 +839,13 @@ describe('action', () => {
             return ''
         }
       })
+
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty(
-        'message',
-        'Badge datestamp date style invalid.'
-      )
-    }
+    }).rejects.toThrow('Badge datestamp date style invalid.')
   })
 
   it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, invalid datestamp-timestyle', async () => {
-    let err
-    try {
+    await expect(async () => {
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
@@ -959,15 +865,9 @@ describe('action', () => {
             return ''
         }
       })
+
       await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty(
-        'message',
-        'Badge datestamp time style invalid.'
-      )
-    }
+    }).rejects.toThrow('Badge datestamp time style invalid.')
   })
 
   it('badge type datestamp with label, no message, null datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
