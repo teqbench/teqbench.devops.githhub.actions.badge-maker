@@ -62,4 +62,4 @@ jobs:
 
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.svg }}"
+        run: echo '${{ steps.test-action.outputs.svg }}'
