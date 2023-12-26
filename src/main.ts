@@ -6,16 +6,16 @@ enum BadgeType {
   SUCCESS = 'SUCCESS',
 
   // General purpose failure badge, red. Label optional, message is required.
-  FAILURE = 'FAILURE', // Red
+  FAILURE = 'FAILURE',
 
   // General purpose passing badge, green. Default message is 'passing'. Label optional, message is optional; if message param not supplied, defaults to 'passing'.
-  PASSING = 'PASSING', // GREEN
+  PASSING = 'PASSING',
 
   // General purpose failing badge, red. Default message is 'failing'. Label optional, message is optional; if message param not supplied, defaults to 'failing'.
   FAILING = 'FAILING',
 
   // General purpose date/time stamp badge, blue. Label required, message ignored.
-  DATESTAMP = 'DATESTAMP', // BLUE
+  DATESTAMP = 'DATESTAMP',
 
   // General purpose information badge, blue. Label required, message required.
   INFORMATION = 'INFORMATION',
