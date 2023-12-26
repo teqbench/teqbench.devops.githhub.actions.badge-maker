@@ -4805,7 +4805,7 @@ async function run() {
                 label = inputLabel;
                 // If no input message supplied, set to default value depending on the badge type.
                 if (inputMessage === null || inputMessage.trim().length === 0) {
-                    message = badgeType === BadgeType.PASSING ? 'passing' : 'failing';
+                    message = badgeType.toLocaleLowerCase();
                 }
                 else {
                     message = validateInputMessage(inputMessage);
@@ -4813,15 +4813,20 @@ async function run() {
                 break;
             }
             case BadgeType.DATESTAMP: {
-                // Label required, message ignored.
+                // Label required, message ignored, timestamp-format optional, timestamp-timezone optional
                 label = validateInputLabel(inputLabel);
                 // Only get the timestamp-format input when the badge style is DATESTAMP
                 const inputBadgeTimestampFormatType = core.getInput('timestamp-format');
                 const badgeBadgeTimestampFormatType = stringToBadgeTimestampFormatType(inputBadgeTimestampFormatType);
+                if (badgeBadgeTimestampFormatType === null) {
+                    throw new Error('Badge timestamp format invalid.');
+                }
                 // Only get the timezone input when badge style is DATESTAMP
                 const inputBadgeTimestampTimezoneType = core.getInput('timestamp-timezone');
                 const badgeBadgeTimestampTimezoneType = stringToBadgeTimestampTimezoneType(inputBadgeTimestampTimezoneType);
-                stringToBadgeTimestampTimezoneType;
+                if (badgeBadgeTimestampTimezoneType === null) {
+                    throw new Error('Badge timestamp timezone invalid.');
+                }
                 const options = {
                     timeZone: badgeBadgeTimestampTimezoneType?.toString()
                 };
@@ -4905,7 +4910,10 @@ function stringToBadgeStyleTypeEnum(value) {
 function stringToBadgeTimestampFormatType(value) {
     // Do not change case of the original value
     const uc = (value ?? '').trim();
-    if (Object.values(BadgeTimestampFormatType).findIndex(x => x === uc) >= 0) {
+    if (uc === '') {
+        return BadgeTimestampFormatType.ENGLISH_UNITED_STATES;
+    }
+    else if (Object.values(BadgeTimestampFormatType).findIndex(x => x === uc) >= 0) {
         return value.trim();
     }
     // Return a null if supplied value is not found in list of supported formats to
@@ -4925,7 +4933,7 @@ function stringToBadgeTimestampTimezoneType(value) {
     return null;
 }
 function validateValue(value, name) {
-    if (value === null || value.trim().length === 0) {
+    if (value === null || value === undefined || value.trim().length === 0) {
         throw new Error(`A ${name} is required.`);
     }
     return value.trim();

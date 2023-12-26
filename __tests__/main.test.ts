@@ -294,6 +294,523 @@ describe('action', () => {
     }
   })
 
+  it('badge type passing with label and message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'PASSING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'passing'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type passing with message no label', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'PASSING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'passing'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type passing with label and no message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'PASSING'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type passing with no label and no message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'PASSING'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type passing with label and null message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'PASSING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return null
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type failing with label and message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'failing'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type failing with message no label', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'failing'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type failing with label and no message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILING'
+        case 'label':
+          return 'build'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type failing with no label and no message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILING'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type failing with label and null message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'FAILING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return null
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type information with label and message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'INFORMATION'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'info'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type information with no label and message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'INFORMATION'
+          case 'label':
+            return 'build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
+    }
+  })
+
+  it('badge type information with label and no message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'INFORMATION'
+          case 'label':
+            return 'build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
+    }
+  })
+
+  it('badge type information with label and null message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'INFORMATION'
+          case 'label':
+            return 'build'
+          case 'message':
+            return null
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
+    }
+  })
+
+  it('badge type information with null label and message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'INFORMATION'
+          case 'label':
+            return null
+          case 'message':
+            return 'build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A label is required.')
+    }
+  })
+
+  it('badge type warning with label and message', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string => {
+      switch (name) {
+        case 'badge-type':
+          return 'WARNING'
+        case 'label':
+          return 'build'
+        case 'message':
+          return 'info'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type warning with no label and message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'WARNING'
+          case 'label':
+            return 'build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
+    }
+  })
+
+  it('badge type warning with label and no message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'WARNING'
+          case 'label':
+            return 'build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
+    }
+  })
+
+  it('badge type warning with label and null message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'WARNING'
+          case 'label':
+            return 'build'
+          case 'message':
+            return null
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A message is required.')
+    }
+  })
+
+  it('badge type warning with null label and message', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string | null => {
+        switch (name) {
+          case 'badge-type':
+            return 'WARNING'
+          case 'label':
+            return null
+          case 'message':
+            return 'build'
+          default:
+            return ''
+        }
+      })
+
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'A label is required.')
+    }
+  })
+  ////////////////////////////////
+
   it('badge type failure', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
