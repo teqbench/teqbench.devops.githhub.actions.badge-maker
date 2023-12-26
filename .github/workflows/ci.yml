@@ -55,7 +55,10 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          badge-type: 'SUCCESS'
+          label: 'build'
+          message: ''
+          badge-style: 'flat'
 
       - name: Print Output
         id: output

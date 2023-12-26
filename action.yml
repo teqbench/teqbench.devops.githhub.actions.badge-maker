@@ -9,10 +9,10 @@ inputs:
     required: true
   label:
     description: "The label of the badge."
-    required: true
+    required: false
   message:
     description: "The message of the badge."
-    required: true
+    required: false
   badge-style:
     description: "The style to use when creating the badge. Options: plastic, flat, flat-square, for-the-badge (default), social"
     required: false
