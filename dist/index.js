@@ -4736,38 +4736,54 @@ var BadgeType;
 })(BadgeType || (BadgeType = {}));
 var BadgeStyleType;
 (function (BadgeStyleType) {
-    BadgeStyleType["PLASTIC"] = "PLASTIC";
-    BadgeStyleType["FLAT"] = "FLAT";
-    BadgeStyleType["FLAT_SQUARE"] = "FLAT-SQUARE";
+    BadgeStyleType["PLASTIC"] = "plastic";
+    BadgeStyleType["FLAT"] = "flat";
+    BadgeStyleType["FLAT_SQUARE"] = "flat-square";
     // Default style
-    BadgeStyleType["FOR_THE_BADGE"] = "FOR-THE-BADGE";
-    BadgeStyleType["SOCIAL"] = "SOCIAL";
+    BadgeStyleType["FOR_THE_BADGE"] = "for-the-badge";
+    BadgeStyleType["SOCIAL"] = "social";
 })(BadgeStyleType || (BadgeStyleType = {}));
 // List of supported datetime locale formats. Add to library as needed; for now start with small set to verify funcitonality.
-var BadgeTimestampFormatType;
-(function (BadgeTimestampFormatType) {
-    // Default timestamp format
-    BadgeTimestampFormatType["ENGLISH_UNITED_STATES"] = "en_US";
-})(BadgeTimestampFormatType || (BadgeTimestampFormatType = {}));
+var BadgeDatestampFormatType;
+(function (BadgeDatestampFormatType) {
+    // Default datestamp format
+    BadgeDatestampFormatType["ENGLISH_UNITED_STATES"] = "en-US";
+})(BadgeDatestampFormatType || (BadgeDatestampFormatType = {}));
 // List of supported datetime locale formats. Add to library as needed; for now start with small set to verify funcitonality.
-var BadgeTimestampTimezoneType;
-(function (BadgeTimestampTimezoneType) {
-    // Default timestamp timezone
-    BadgeTimestampTimezoneType["UTC"] = "UTC";
-    BadgeTimestampTimezoneType["US_ALASKA"] = "US/Alaska";
-    BadgeTimestampTimezoneType["US_ALEUTIAN"] = "US/Aleutian";
-    BadgeTimestampTimezoneType["US_ARIZONA"] = "US/Arizona";
-    BadgeTimestampTimezoneType["US_CENTRAL"] = "US/Central";
-    BadgeTimestampTimezoneType["US_EAST_INDIANA"] = "US/East_Indiana";
-    BadgeTimestampTimezoneType["US_EASTERN"] = "US/Eastern";
-    BadgeTimestampTimezoneType["US_HAWAII"] = "US/Hawaii";
-    BadgeTimestampTimezoneType["US_INDIANA_STARKE"] = "US/Indiana_Starke";
-    BadgeTimestampTimezoneType["US_MICHIGAN"] = "US/Michigan";
-    BadgeTimestampTimezoneType["US_MOUNTAIN"] = "US/Mountain";
-    BadgeTimestampTimezoneType["US_PACIFIC"] = "US/Pacific";
-    BadgeTimestampTimezoneType["US_PACIFIC_NEW"] = "US/Pacific_New";
-    BadgeTimestampTimezoneType["US_SAMOA"] = "US/Samoa";
-})(BadgeTimestampTimezoneType || (BadgeTimestampTimezoneType = {}));
+var BadgeDatestampTimezoneType;
+(function (BadgeDatestampTimezoneType) {
+    // Default datestamp timezone
+    BadgeDatestampTimezoneType["UTC"] = "UTC";
+    BadgeDatestampTimezoneType["US_ALASKA"] = "US/Alaska";
+    BadgeDatestampTimezoneType["US_ALEUTIAN"] = "US/Aleutian";
+    BadgeDatestampTimezoneType["US_ARIZONA"] = "US/Arizona";
+    BadgeDatestampTimezoneType["US_CENTRAL"] = "US/Central";
+    BadgeDatestampTimezoneType["US_EAST_INDIANA"] = "US/East_Indiana";
+    BadgeDatestampTimezoneType["US_EASTERN"] = "US/Eastern";
+    BadgeDatestampTimezoneType["US_HAWAII"] = "US/Hawaii";
+    BadgeDatestampTimezoneType["US_INDIANA_STARKE"] = "US/Indiana_Starke";
+    BadgeDatestampTimezoneType["US_MICHIGAN"] = "US/Michigan";
+    BadgeDatestampTimezoneType["US_MOUNTAIN"] = "US/Mountain";
+    BadgeDatestampTimezoneType["US_PACIFIC"] = "US/Pacific";
+    BadgeDatestampTimezoneType["US_PACIFIC_NEW"] = "US/Pacific_New";
+    BadgeDatestampTimezoneType["US_SAMOA"] = "US/Samoa";
+})(BadgeDatestampTimezoneType || (BadgeDatestampTimezoneType = {}));
+var BadgeDatestampDateStyleType;
+(function (BadgeDatestampDateStyleType) {
+    // Default date style
+    BadgeDatestampDateStyleType["MEDIUM"] = "medium";
+    BadgeDatestampDateStyleType["FULL"] = "full";
+    BadgeDatestampDateStyleType["LONG"] = "long";
+    BadgeDatestampDateStyleType["SHORT"] = "short";
+})(BadgeDatestampDateStyleType || (BadgeDatestampDateStyleType = {}));
+var BadgeDatestampTimeStyleType;
+(function (BadgeDatestampTimeStyleType) {
+    BadgeDatestampTimeStyleType["MEDIUM"] = "medium";
+    BadgeDatestampTimeStyleType["FULL"] = "full";
+    // Default time style
+    BadgeDatestampTimeStyleType["LONG"] = "long";
+    BadgeDatestampTimeStyleType["SHORT"] = "short";
+})(BadgeDatestampTimeStyleType || (BadgeDatestampTimeStyleType = {}));
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -4813,24 +4829,42 @@ async function run() {
                 break;
             }
             case BadgeType.DATESTAMP: {
-                // Label required, message ignored, timestamp-format optional, timestamp-timezone optional
+                // Label required, message ignored, datestamp-format optional,
+                // datestamp-timezone optional, datestamp-datestyle optional, datestamp-timestyle optional
                 label = validateInputLabel(inputLabel);
-                // Only get the timestamp-format input when the badge style is DATESTAMP
-                const inputBadgeTimestampFormatType = core.getInput('timestamp-format');
-                const badgeBadgeTimestampFormatType = stringToBadgeTimestampFormatType(inputBadgeTimestampFormatType);
-                if (badgeBadgeTimestampFormatType === null) {
-                    throw new Error('Badge timestamp format invalid.');
+                // Only get the datestamp-format input when the badge style is DATESTAMP
+                const inputBadgeDatestampFormatType = core.getInput('datestamp-format');
+                const badgeBadgeDatestampFormatType = stringToBadgeDatestampFormatType(inputBadgeDatestampFormatType);
+                if (badgeBadgeDatestampFormatType === null) {
+                    throw new Error('Badge datestamp format invalid.');
                 }
                 // Only get the timezone input when badge style is DATESTAMP
-                const inputBadgeTimestampTimezoneType = core.getInput('timestamp-timezone');
-                const badgeBadgeTimestampTimezoneType = stringToBadgeTimestampTimezoneType(inputBadgeTimestampTimezoneType);
-                if (badgeBadgeTimestampTimezoneType === null) {
-                    throw new Error('Badge timestamp timezone invalid.');
+                const inputBadgeDatestampTimezoneType = core.getInput('datestamp-timezone');
+                const badgeBadgeDatestampTimezoneType = stringToBadgeDatestampTimezoneType(inputBadgeDatestampTimezoneType);
+                if (badgeBadgeDatestampTimezoneType === null) {
+                    throw new Error('Badge datestamp timezone invalid.');
                 }
-                const options = {
-                    timeZone: badgeBadgeTimestampTimezoneType?.toString()
-                };
-                message = new Intl.DateTimeFormat(badgeBadgeTimestampFormatType?.toString(), options).format(new Date());
+                // Only get the datestyle input when the badge style is DATESTAMP
+                const inputBadgeDatestampDateStyle = core.getInput('datestamp-datestyle');
+                const badgeDatestampDateStyle = stringToBadgeStyleDateStyleEnum(inputBadgeDatestampDateStyle);
+                if (badgeDatestampDateStyle === null) {
+                    throw new Error('Badge datestamp date style invalid.');
+                }
+                // Only get the timestyle input when the badge style is DATESTAMP
+                const inputBadgeDatestampTimeStyle = core.getInput('datestamp-timestyle');
+                const badgeDatestampTimeStyle = stringToBadgeStyleTimeStyleEnum(inputBadgeDatestampTimeStyle);
+                if (badgeDatestampTimeStyle === null) {
+                    throw new Error('Badge datestamp time style invalid.');
+                }
+                message = Intl.DateTimeFormat(badgeBadgeDatestampFormatType?.toString(), {
+                    timeZone: badgeBadgeDatestampTimezoneType?.toString(),
+                    // The style property of the Format type is defined using an inline type def. Make sure to force
+                    // to lowercase in order to cast.
+                    dateStyle: badgeDatestampDateStyle?.toLowerCase(),
+                    // The style property of the Format type is defined using an inline type def. Make sure to force
+                    // to lowercase in order to cast.
+                    timeStyle: badgeDatestampTimeStyle?.toLowerCase()
+                }).format(new Date());
                 break;
             }
             case BadgeType.INFORMATION:
@@ -4870,10 +4904,9 @@ async function run() {
             color,
             // The style property of the Format type is defined using an inline type def. Make sure to force
             // to lowercase in order to cast.
-            style: badgeStyleType.toLocaleLowerCase()
+            style: badgeStyleType.toLowerCase()
         };
         const svg = (0, badge_maker_1.makeBadge)(format);
-        // console.log(svg)
         // Set outputs for other workflow steps to use
         core.setOutput('svg', svg);
     }
@@ -4896,39 +4929,65 @@ function stringToBadgeTypeEnum(value) {
     return null;
 }
 function stringToBadgeStyleTypeEnum(value) {
-    const uc = (value ?? '').toUpperCase().trim();
-    if (uc === '') {
+    const style = (value ?? '').toLowerCase().trim();
+    if (style === '') {
         return BadgeStyleType.FOR_THE_BADGE;
     }
-    else if (Object.values(BadgeStyleType).findIndex(x => x === uc) >= 0) {
-        return uc;
+    else if (Object.values(BadgeStyleType).findIndex(x => x === style) >= 0) {
+        return style;
     }
     // Return a null if supplied value is not an empty string AND not found in list of supported formats to
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
-function stringToBadgeTimestampFormatType(value) {
+function stringToBadgeDatestampFormatType(value) {
     // Do not change case of the original value
-    const uc = (value ?? '').trim();
-    if (uc === '') {
-        return BadgeTimestampFormatType.ENGLISH_UNITED_STATES;
+    const format = (value ?? '').trim();
+    if (format === '') {
+        return BadgeDatestampFormatType.ENGLISH_UNITED_STATES;
     }
-    else if (Object.values(BadgeTimestampFormatType).findIndex(x => x === uc) >= 0) {
+    else if (Object.values(BadgeDatestampFormatType).findIndex(x => x === format) >= 0) {
         return value.trim();
     }
     // Return a null if supplied value is not found in list of supported formats to
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
-function stringToBadgeTimestampTimezoneType(value) {
-    const uc = (value ?? '').toUpperCase().trim();
-    if (uc === '') {
-        return BadgeTimestampTimezoneType.UTC;
+function stringToBadgeDatestampTimezoneType(value) {
+    // Do not change case of the original value
+    const timezone = (value ?? '').trim();
+    if (timezone === '') {
+        return BadgeDatestampTimezoneType.UTC;
     }
-    else if (Object.values(BadgeTimestampTimezoneType).findIndex(x => x === uc) >= 0) {
-        return uc;
+    else if (Object.values(BadgeDatestampTimezoneType).findIndex(x => x === timezone) >=
+        0) {
+        return timezone;
     }
     // Return a null if supplied value is not an empty string AND not found in list of supported timezones to
+    // indicate to the dev the value they are supplying is invalid.
+    return null;
+}
+function stringToBadgeStyleDateStyleEnum(value) {
+    const style = (value ?? '').toLowerCase().trim();
+    if (style === '') {
+        return BadgeDatestampDateStyleType.MEDIUM;
+    }
+    else if (Object.values(BadgeDatestampDateStyleType).findIndex(x => x === style) >= 0) {
+        return style;
+    }
+    // Return a null if supplied value is not an empty string AND not found in list of supported formats to
+    // indicate to the dev the value they are supplying is invalid.
+    return null;
+}
+function stringToBadgeStyleTimeStyleEnum(value) {
+    const style = (value ?? '').toLowerCase().trim();
+    if (style === '') {
+        return BadgeDatestampTimeStyleType.LONG;
+    }
+    else if (Object.values(BadgeDatestampTimeStyleType).findIndex(x => x === style) >= 0) {
+        return style;
+    }
+    // Return a null if supplied value is not an empty string AND not found in list of supported formats to
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }

@@ -809,18 +809,23 @@ describe('action', () => {
       expect(err).toHaveProperty('message', 'A label is required.')
     }
   })
-  ////////////////////////////////
 
-  it('badge type failure', async () => {
+  it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
     // Set the action's inputs as return values from core.getInput()
     getInputMock.mockImplementation((name: string): string => {
       switch (name) {
         case 'badge-type':
-          return 'FAILURE'
+          return 'DATESTAMP'
         case 'label':
           return 'build'
-        case 'message':
-          return 'failure'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return 'US/Mountain'
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return 'FULL'
         default:
           return ''
       }
@@ -839,74 +844,148 @@ describe('action', () => {
     expect(errorMock).not.toHaveBeenCalled()
   })
 
-  it('badge type information', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation((name: string): string => {
-      switch (name) {
-        case 'badge-type':
-          return 'INFORMATION'
-        case 'label':
-          return 'build'
-        case 'message':
-          return 'info'
-        default:
-          return ''
-      }
-    })
-
-    await main.run()
-
-    expect(runMock).toHaveReturned()
-
-    expect(setOutputMock).toHaveBeenNthCalledWith(
-      1,
-      'svg',
-      expect.stringContaining('svg')
-    )
-
-    expect(errorMock).not.toHaveBeenCalled()
-  })
-
-  it('badge type invalid', async () => {
+  it('badge type datestamp with label, no message, invalid datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
     let err
-
     try {
-      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-      // for how to test promises that throw errors.
-
       // Set the action's inputs as return values from core.getInput()
       getInputMock.mockImplementation((name: string): string => {
         switch (name) {
           case 'badge-type':
-            return 'invalid'
+            return 'DATESTAMP'
           case 'label':
             return 'build'
-          case 'message':
-            return 'info'
+          case 'datestamp-format':
+            return 'invalid'
+          case 'datestamp-timezone':
+            return 'US/Mountain'
+          case 'datestamp-datestyle':
+            return 'full'
+          case 'datestamp-timestyle':
+            return 'FULL'
           default:
             return ''
         }
       })
-
       await main.run()
     } catch (e) {
       err = e
     } finally {
-      expect(err).toHaveProperty('message', 'Badge type invalid.')
+      expect(err).toHaveProperty('message', 'Badge datestamp format invalid.')
     }
   })
 
-  it('badge label missing', async () => {
-    // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-    // for how to test promises that throw errors.
+  it('badge type datestamp with label, no message, datestamp-format, invalid datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string => {
+        switch (name) {
+          case 'badge-type':
+            return 'DATESTAMP'
+          case 'label':
+            return 'build'
+          case 'datestamp-format':
+            return 'en-US'
+          case 'datestamp-timezone':
+            return 'invalid'
+          case 'datestamp-datestyle':
+            return 'full'
+          case 'datestamp-timestyle':
+            return 'FULL'
+          default:
+            return ''
+        }
+      })
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty('message', 'Badge datestamp timezone invalid.')
+    }
+  })
 
+  it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, invalid datestamp-datestyle, datestamp-timestyle', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string => {
+        switch (name) {
+          case 'badge-type':
+            return 'DATESTAMP'
+          case 'label':
+            return 'build'
+          case 'datestamp-format':
+            return 'en-US'
+          case 'datestamp-timezone':
+            return 'UTC'
+          case 'datestamp-datestyle':
+            return 'invalid'
+          case 'datestamp-timestyle':
+            return 'FULL'
+          default:
+            return ''
+        }
+      })
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty(
+        'message',
+        'Badge datestamp date style invalid.'
+      )
+    }
+  })
+
+  it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, invalid datestamp-timestyle', async () => {
+    let err
+    try {
+      // Set the action's inputs as return values from core.getInput()
+      getInputMock.mockImplementation((name: string): string => {
+        switch (name) {
+          case 'badge-type':
+            return 'DATESTAMP'
+          case 'label':
+            return 'build'
+          case 'datestamp-format':
+            return 'en-US'
+          case 'datestamp-timezone':
+            return 'UTC'
+          case 'datestamp-datestyle':
+            return 'full'
+          case 'datestamp-timestyle':
+            return 'invalid'
+          default:
+            return ''
+        }
+      })
+      await main.run()
+    } catch (e) {
+      err = e
+    } finally {
+      expect(err).toHaveProperty(
+        'message',
+        'Badge datestamp time style invalid.'
+      )
+    }
+  })
+
+  it('badge type datestamp with label, no message, null datestamp-format, datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
     // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation((name: string): string => {
+    getInputMock.mockImplementation((name: string): string | null => {
       switch (name) {
         case 'badge-type':
-          return 'SUCCESS'
-        case 'message':
-          return 'info'
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return null
+        case 'datestamp-timezone':
+          return 'US/Mountain'
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return 'FULL'
         default:
           return ''
       }
@@ -925,31 +1004,106 @@ describe('action', () => {
     expect(errorMock).not.toHaveBeenCalled()
   })
 
-  it('badge message missing', async () => {
-    let err
+  it('badge type datestamp with label, no message, datestamp-format, null datestamp-timezone, datestamp-datestyle, datestamp-timestyle', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return null
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return 'FULL'
+        default:
+          return ''
+      }
+    })
 
-    try {
-      // See https://stackoverflow.com/questions/64545786/how-to-correctly-expect-an-error-to-be-thrown-in-jest-from-inside-a-catch-block
-      // for how to test promises that throw errors.
+    await main.run()
 
-      // Set the action's inputs as return values from core.getInput()
-      getInputMock.mockImplementation((name: string): string => {
-        switch (name) {
-          case 'badge-type':
-            return 'SUCCESS'
-          case 'label':
-            return 'Build'
-          default:
-            return ''
-        }
-      })
+    expect(runMock).toHaveReturned()
 
-      await main.run()
-    } catch (e) {
-      err = e
-    } finally {
-      expect(err).toHaveProperty('message', 'A message is required.')
-    }
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, null datestamp-datestyle, datestamp-timestyle', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return 'US/Mountain'
+        case 'datestamp-datestyle':
+          return null
+        case 'datestamp-timestyle':
+          return 'FULL'
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
+  })
+
+  it('badge type datestamp with label, no message, datestamp-format, datestamp-timezone, datestamp-datestyle, null datestamp-timestyle', async () => {
+    // Set the action's inputs as return values from core.getInput()
+    getInputMock.mockImplementation((name: string): string | null => {
+      switch (name) {
+        case 'badge-type':
+          return 'DATESTAMP'
+        case 'label':
+          return 'build'
+        case 'datestamp-format':
+          return 'en-US'
+        case 'datestamp-timezone':
+          return 'US/Mountain'
+        case 'datestamp-datestyle':
+          return 'full'
+        case 'datestamp-timestyle':
+          return null
+        default:
+          return ''
+      }
+    })
+
+    await main.run()
+
+    expect(runMock).toHaveReturned()
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      1,
+      'svg',
+      expect.stringContaining('svg')
+    )
+
+    expect(errorMock).not.toHaveBeenCalled()
   })
 
   it('badge style type plastic', async () => {
