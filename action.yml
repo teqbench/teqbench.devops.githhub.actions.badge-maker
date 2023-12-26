@@ -5,16 +5,28 @@ author: 'TeqBench'
 # Define your inputs here.
 inputs:
   badge-type:
-    description: "Type of badge to create. Options: SUCCESS, FAILURE, INFORMATION"
+    description: "Type of badge to create. Options: SUCCESS, FAILURE, PASSING, FAILING, DATESTAMP, INFORMATION, WARNING"
     required: true
   label:
     description: "The label of the badge."
-    required: true
+    required: false
   message:
     description: "The message of the badge."
-    required: true
+    required: false
   badge-style:
     description: "The style to use when creating the badge. Options: plastic, flat, flat-square, for-the-badge (default), social"
+    required: false
+  datestamp-format:
+    description: "The datetime format to use when creating a datestamp badge. Options: see exhaustive list in BadgeDateTimeFormatType."
+    required: false
+  datestamp-timezone:
+    description: "The datetime timezone to use when creating a datestamp badge. Options: see exhaustive list in BadgeDatestampTimezoneType."
+    required: false
+  datestamp-datestyle:
+    description: "The datestyle time style to use when creating a datestamp badge. Options: medium (default), full, long, short"
+    required: false
+  datestamp-timestyle:
+    description: "The datetime time style to use when creating a datestamp badge. Options: medium, full (default), long, short"
     required: false
 
 # Define your outputs here.

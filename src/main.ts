@@ -1,29 +1,82 @@
 import * as core from '@actions/core'
 import { Format, makeBadge } from 'badge-maker'
 
-// import { wait } from './wait'
-
-// label: 'build',  // (Optional) Badge label
-// message: 'passed',  // (Required) Badge message
-// labelColor: '#555',  // (Optional) Label color
-// color: '#4c1',  // (Optional) Message color
-
-// // (Optional) One of: 'plastic', 'flat', 'flat-square', 'for-the-badge' or 'social'
-// // Each offers a different visual design.
-// style: 'flat',
-
 enum BadgeType {
-  SUCCESS = 'SUCCESS', // GREEN
-  FAILURE = 'FAILURE', // Red
-  INFORMATION = 'INFORMATION' // Blue
+  // General purpose success badge, green. Label optional, message is required.
+  SUCCESS = 'SUCCESS',
+
+  // General purpose failure badge, red. Label optional, message is required.
+  FAILURE = 'FAILURE',
+
+  // General purpose passing badge, green. Default message is 'passing'. Label optional, message is optional; if message param not supplied, defaults to 'passing'.
+  PASSING = 'PASSING',
+
+  // General purpose failing badge, red. Default message is 'failing'. Label optional, message is optional; if message param not supplied, defaults to 'failing'.
+  FAILING = 'FAILING',
+
+  // General purpose date/time stamp badge, blue. Label required, message ignored.
+  DATESTAMP = 'DATESTAMP',
+
+  // General purpose information badge, blue. Label required, message required.
+  INFORMATION = 'INFORMATION',
+
+  // General purpose warning badge, yellow. Label required, message required.
+  WARNING = 'WARNING'
 }
 
 enum BadgeStyleType {
-  PLASTIC = 'PLASTIC',
-  FLAT = 'FLAT',
-  FLAT_SQUARE = 'FLAT-SQUARE',
-  FOR_THE_BADGE = 'FOR-THE-BADGE',
-  SOCIAL = 'SOCIAL'
+  PLASTIC = 'plastic',
+  FLAT = 'flat',
+  FLAT_SQUARE = 'flat-square',
+
+  // Default style
+  FOR_THE_BADGE = 'for-the-badge',
+  SOCIAL = 'social'
+}
+
+// List of supported datetime locale formats. Add to library as needed; for now start with small set to verify funcitonality.
+enum BadgeDatestampFormatType {
+  // Default datestamp format
+  ENGLISH_UNITED_STATES = 'en-US'
+}
+
+// List of supported datetime locale formats. Add to library as needed; for now start with small set to verify funcitonality.
+enum BadgeDatestampTimezoneType {
+  // Default datestamp timezone
+  UTC = 'UTC',
+
+  US_ALASKA = 'US/Alaska',
+  US_ALEUTIAN = 'US/Aleutian',
+  US_ARIZONA = 'US/Arizona',
+  US_CENTRAL = 'US/Central',
+  US_EAST_INDIANA = 'US/East_Indiana',
+  US_EASTERN = 'US/Eastern',
+  US_HAWAII = 'US/Hawaii',
+  US_INDIANA_STARKE = 'US/Indiana_Starke',
+  US_MICHIGAN = 'US/Michigan',
+  US_MOUNTAIN = 'US/Mountain',
+  US_PACIFIC = 'US/Pacific',
+  US_PACIFIC_NEW = 'US/Pacific_New',
+  US_SAMOA = 'US/Samoa'
+}
+
+enum BadgeDatestampDateStyleType {
+  // Default date style
+  MEDIUM = 'medium',
+
+  FULL = 'full',
+  LONG = 'long',
+  SHORT = 'short'
+}
+
+enum BadgeDatestampTimeStyleType {
+  MEDIUM = 'medium',
+  FULL = 'full',
+
+  // Default time style
+  LONG = 'long',
+
+  SHORT = 'short'
 }
 
 /**
@@ -48,46 +101,159 @@ export async function run(): Promise<void> {
       throw new Error('Badge type invalid.')
     }
 
-    if (inputLabel === null || inputLabel.trim().length === 0) {
-      throw new Error('A label is required.')
-    }
-
-    if (inputMessage === null || inputMessage.trim().length === 0) {
-      throw new Error('A message is required.')
-    }
-
     if (badgeStyleType === null) {
-      throw new Error('Badge style type invalid.')
+      throw new Error('Badge style invalid.')
     }
 
-    let messageColor: string = 'gray'
+    let label = ''
+    let message = ''
 
     switch (badgeType) {
-      case BadgeType.SUCCESS: {
-        messageColor = 'brightgreen'
-
-        break
-      }
+      case BadgeType.SUCCESS:
       case BadgeType.FAILURE: {
-        messageColor = 'red'
+        // Label optional, message is required.
+        label = inputLabel
+        message = validateInputMessage(inputMessage)
 
         break
       }
+      case BadgeType.PASSING:
+      case BadgeType.FAILING: {
+        // Label optional, message is optional; if message param not supplied, defaults to 'passing'/'failing'.
+        label = inputLabel
+
+        // If no input message supplied, set to default value depending on the badge type.
+        if (inputMessage === null || inputMessage.trim().length === 0) {
+          message = badgeType.toLocaleLowerCase()
+        } else {
+          message = validateInputMessage(inputMessage)
+        }
+
+        break
+      }
+      case BadgeType.DATESTAMP: {
+        // Label required, message ignored, datestamp-format optional,
+        // datestamp-timezone optional, datestamp-datestyle optional, datestamp-timestyle optional
+        label = validateInputLabel(inputLabel)
+
+        // Only get the datestamp-format input when the badge style is DATESTAMP
+        const inputBadgeDatestampFormatType: string =
+          core.getInput('datestamp-format')
+
+        const badgeBadgeDatestampFormatType: BadgeDatestampFormatType | null =
+          stringToBadgeDatestampFormatType(inputBadgeDatestampFormatType)
+
+        if (badgeBadgeDatestampFormatType === null) {
+          throw new Error('Badge datestamp format invalid.')
+        }
+
+        // Only get the timezone input when badge style is DATESTAMP
+        const inputBadgeDatestampTimezoneType: string =
+          core.getInput('datestamp-timezone')
+
+        const badgeBadgeDatestampTimezoneType: BadgeDatestampTimezoneType | null =
+          stringToBadgeDatestampTimezoneType(inputBadgeDatestampTimezoneType)
+
+        if (badgeBadgeDatestampTimezoneType === null) {
+          throw new Error('Badge datestamp timezone invalid.')
+        }
+
+        // Only get the datestyle input when the badge style is DATESTAMP
+        const inputBadgeDatestampDateStyle: string = core.getInput(
+          'datestamp-datestyle'
+        )
+
+        const badgeDatestampDateStyle: BadgeDatestampDateStyleType | null =
+          stringToBadgeStyleDateStyleEnum(inputBadgeDatestampDateStyle)
+
+        if (badgeDatestampDateStyle === null) {
+          throw new Error('Badge datestamp date style invalid.')
+        }
+
+        // Only get the timestyle input when the badge style is DATESTAMP
+        const inputBadgeDatestampTimeStyle: string = core.getInput(
+          'datestamp-timestyle'
+        )
+
+        const badgeDatestampTimeStyle: BadgeDatestampTimeStyleType | null =
+          stringToBadgeStyleTimeStyleEnum(inputBadgeDatestampTimeStyle)
+
+        if (badgeDatestampTimeStyle === null) {
+          throw new Error('Badge datestamp time style invalid.')
+        }
+
+        message = Intl.DateTimeFormat(
+          badgeBadgeDatestampFormatType?.toString(),
+          {
+            timeZone: badgeBadgeDatestampTimezoneType?.toString(),
+
+            // The style property of the Format type is defined using an inline type def. Make sure to force
+            // to lowercase in order to cast.
+            dateStyle: badgeDatestampDateStyle?.toLowerCase() as
+              | 'medium'
+              | 'full'
+              | 'long'
+              | 'short',
+
+            // The style property of the Format type is defined using an inline type def. Make sure to force
+            // to lowercase in order to cast.
+            timeStyle: badgeDatestampTimeStyle?.toLowerCase() as
+              | 'medium'
+              | 'full'
+              | 'long'
+              | 'short'
+          }
+        ).format(new Date())
+
+        break
+      }
+      case BadgeType.INFORMATION:
+      case BadgeType.WARNING: {
+        // Label required, message required.
+        label = validateInputLabel(inputLabel)
+        message = validateInputMessage(inputMessage)
+
+        break
+      }
+    }
+
+    // Determine badge's message color based on the supplied badge type.
+    let color = 'gray'
+
+    switch (badgeType) {
+      case BadgeType.SUCCESS:
+      case BadgeType.PASSING: {
+        color = 'success'
+
+        break
+      }
+      case BadgeType.FAILURE:
+      case BadgeType.FAILING: {
+        color = 'critical'
+
+        break
+      }
+      case BadgeType.DATESTAMP:
       case BadgeType.INFORMATION: {
-        messageColor = 'blue'
+        color = 'informational'
+
+        break
+      }
+      case BadgeType.WARNING: {
+        color = 'yellow'
 
         break
       }
     }
 
     const format: Format = {
-      label: inputLabel,
-      message: inputMessage,
-      color: messageColor,
+      label,
+      message,
+      color,
 
       // The style property of the Format type is defined using an inline type def. Make sure to force
       // to lowercase in order to cast.
-      style: badgeStyleType.toLocaleLowerCase() as
+      style: badgeStyleType.toLowerCase() as
         | 'plastic'
         | 'flat'
         | 'flat-square'
@@ -97,16 +263,12 @@ export async function run(): Promise<void> {
 
     const svg = makeBadge(format)
 
-    console.log(svg)
-
     // Set outputs for other workflow steps to use
     core.setOutput('svg', svg)
   } catch (error) {
-    console.log(error)
-
     // Fail the workflow run if an error occurs
     if (error instanceof Error) {
-      core.setFailed(error)
+      core.setFailed(error.message)
     }
   }
 }
@@ -118,17 +280,112 @@ function stringToBadgeTypeEnum(value: string): BadgeType | null {
     return uc as BadgeType
   }
 
+  // Return a null if supplied value is not found in list of supported badge types to
+  // indicate to the dev the value they are supplying is invalid.
   return null
 }
 
 function stringToBadgeStyleTypeEnum(value: string): BadgeStyleType | null {
-  const uc: string = (value ?? '').toUpperCase().trim()
+  const style: string = (value ?? '').toLowerCase().trim()
 
-  if (uc === '') {
+  if (style === '') {
     return BadgeStyleType.FOR_THE_BADGE
-  } else if (Object.values(BadgeStyleType).findIndex(x => x === uc) >= 0) {
-    return uc as BadgeStyleType
+  } else if (Object.values(BadgeStyleType).findIndex(x => x === style) >= 0) {
+    return style as BadgeStyleType
   }
 
+  // Return a null if supplied value is not an empty string AND not found in list of supported formats to
+  // indicate to the dev the value they are supplying is invalid.
   return null
+}
+
+function stringToBadgeDatestampFormatType(
+  value: string
+): BadgeDatestampFormatType | null {
+  // Do not change case of the original value
+  const format: string = (value ?? '').trim()
+
+  if (format === '') {
+    return BadgeDatestampFormatType.ENGLISH_UNITED_STATES
+  } else if (
+    Object.values(BadgeDatestampFormatType).findIndex(x => x === format) >= 0
+  ) {
+    return value.trim() as BadgeDatestampFormatType
+  }
+
+  // Return a null if supplied value is not found in list of supported formats to
+  // indicate to the dev the value they are supplying is invalid.
+  return null
+}
+
+function stringToBadgeDatestampTimezoneType(
+  value: string
+): BadgeDatestampTimezoneType | null {
+  // Do not change case of the original value
+  const timezone: string = (value ?? '').trim()
+
+  if (timezone === '') {
+    return BadgeDatestampTimezoneType.UTC
+  } else if (
+    Object.values(BadgeDatestampTimezoneType).findIndex(x => x === timezone) >=
+    0
+  ) {
+    return timezone as BadgeDatestampTimezoneType
+  }
+
+  // Return a null if supplied value is not an empty string AND not found in list of supported timezones to
+  // indicate to the dev the value they are supplying is invalid.
+  return null
+}
+
+function stringToBadgeStyleDateStyleEnum(
+  value: string
+): BadgeDatestampDateStyleType | null {
+  const style: string = (value ?? '').toLowerCase().trim()
+
+  if (style === '') {
+    return BadgeDatestampDateStyleType.MEDIUM
+  } else if (
+    Object.values(BadgeDatestampDateStyleType).findIndex(x => x === style) >= 0
+  ) {
+    return style as BadgeDatestampDateStyleType
+  }
+
+  // Return a null if supplied value is not an empty string AND not found in list of supported formats to
+  // indicate to the dev the value they are supplying is invalid.
+  return null
+}
+
+function stringToBadgeStyleTimeStyleEnum(
+  value: string
+): BadgeDatestampTimeStyleType | null {
+  const style: string = (value ?? '').toLowerCase().trim()
+
+  if (style === '') {
+    return BadgeDatestampTimeStyleType.LONG
+  } else if (
+    Object.values(BadgeDatestampTimeStyleType).findIndex(x => x === style) >= 0
+  ) {
+    return style as BadgeDatestampTimeStyleType
+  }
+
+  // Return a null if supplied value is not an empty string AND not found in list of supported formats to
+  // indicate to the dev the value they are supplying is invalid.
+  return null
+}
+
+function validateValue(value: string | null, name: string): string {
+  if (value === null || value === undefined || value.trim().length === 0) {
+    throw new Error(`A ${name} is required.`)
+  }
+
+  return value.trim()
+}
+
+function validateInputLabel(value: string | null): string {
+  return validateValue(value, 'label')
+}
+
+function validateInputMessage(value: string | null): string {
+  return validateValue(value, 'message')
 }
