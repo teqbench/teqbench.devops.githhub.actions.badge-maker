@@ -4717,6 +4717,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const badge_maker_1 = __nccwpck_require__(9141);
+/**
+ * Supported badge types.
+ *
+ * @enum {number}
+ */
 var BadgeType;
 (function (BadgeType) {
     // General purpose success badge, green. Label optional, message is required.
@@ -4734,6 +4739,11 @@ var BadgeType;
     // General purpose warning badge, yellow. Label required, message required.
     BadgeType["WARNING"] = "WARNING";
 })(BadgeType || (BadgeType = {}));
+/**
+ * Supported badge styles.
+ *
+ * @enum {number}
+ */
 var BadgeStyleType;
 (function (BadgeStyleType) {
     BadgeStyleType["PLASTIC"] = "plastic";
@@ -4743,13 +4753,23 @@ var BadgeStyleType;
     BadgeStyleType["FOR_THE_BADGE"] = "for-the-badge";
     BadgeStyleType["SOCIAL"] = "social";
 })(BadgeStyleType || (BadgeStyleType = {}));
-// List of supported datetime locale formats. Add to library as needed; for now start with small set to verify funcitonality.
+/**
+ * Supported datetime locale formats. Add to library as needed; for now start
+ * with small set to verify funcitonality.
+ *
+ * @enum {number}
+ */
 var BadgeDatestampFormatType;
 (function (BadgeDatestampFormatType) {
     // Default datestamp format
     BadgeDatestampFormatType["ENGLISH_UNITED_STATES"] = "en-US";
 })(BadgeDatestampFormatType || (BadgeDatestampFormatType = {}));
-// List of supported datetime locale formats. Add to library as needed; for now start with small set to verify funcitonality.
+/**
+ * Supported datetime locale formats. Add to library as needed; for now start
+ * with small set to verify funcitonality.
+ *
+ * @enum {number}
+ */
 var BadgeDatestampTimezoneType;
 (function (BadgeDatestampTimezoneType) {
     // Default datestamp timezone
@@ -4768,6 +4788,11 @@ var BadgeDatestampTimezoneType;
     BadgeDatestampTimezoneType["US_PACIFIC_NEW"] = "US/Pacific_New";
     BadgeDatestampTimezoneType["US_SAMOA"] = "US/Samoa";
 })(BadgeDatestampTimezoneType || (BadgeDatestampTimezoneType = {}));
+/**
+ * Supported badge datestamp date styles.
+ *
+ * @enum {number}
+ */
 var BadgeDatestampDateStyleType;
 (function (BadgeDatestampDateStyleType) {
     // Default date style
@@ -4776,6 +4801,11 @@ var BadgeDatestampDateStyleType;
     BadgeDatestampDateStyleType["LONG"] = "long";
     BadgeDatestampDateStyleType["SHORT"] = "short";
 })(BadgeDatestampDateStyleType || (BadgeDatestampDateStyleType = {}));
+/**
+ * Supported badge datestamp time styles.
+ *
+ * @enum {number}
+ */
 var BadgeDatestampTimeStyleType;
 (function (BadgeDatestampTimeStyleType) {
     BadgeDatestampTimeStyleType["MEDIUM"] = "medium";
@@ -4786,6 +4816,7 @@ var BadgeDatestampTimeStyleType;
 })(BadgeDatestampTimeStyleType || (BadgeDatestampTimeStyleType = {}));
 /**
  * The main function for the action.
+ *
  * @returns {Promise<void>} Resolves when the action is complete.
  */
 async function run() {
@@ -4797,8 +4828,8 @@ async function run() {
         // TypeScript does not have anyting like ENUM.TryParse and does not throw an
         // error when trying to cast a string to the enum. Created stringToEnum as a workaround
         // to convert a string to an enum. If fails, returns a null.
-        const badgeType = stringToBadgeTypeEnum(inputBadgeType);
-        const badgeStyleType = stringToBadgeStyleTypeEnum(inputBadgeStyleType);
+        const badgeType = stringToBadgeType(inputBadgeType);
+        const badgeStyleType = stringToBadgeStyleType(inputBadgeStyleType);
         if (badgeType === null) {
             throw new Error('Badge type invalid.');
         }
@@ -4846,13 +4877,13 @@ async function run() {
                 }
                 // Only get the datestyle input when the badge style is DATESTAMP
                 const inputBadgeDatestampDateStyle = core.getInput('datestamp-datestyle');
-                const badgeDatestampDateStyle = stringToBadgeStyleDateStyleEnum(inputBadgeDatestampDateStyle);
+                const badgeDatestampDateStyle = stringToBadgeStyleDateStyle(inputBadgeDatestampDateStyle);
                 if (badgeDatestampDateStyle === null) {
                     throw new Error('Badge datestamp date style invalid.');
                 }
                 // Only get the timestyle input when the badge style is DATESTAMP
                 const inputBadgeDatestampTimeStyle = core.getInput('datestamp-timestyle');
-                const badgeDatestampTimeStyle = stringToBadgeStyleTimeStyleEnum(inputBadgeDatestampTimeStyle);
+                const badgeDatestampTimeStyle = stringToBadgeStyleTimeStyle(inputBadgeDatestampTimeStyle);
                 if (badgeDatestampTimeStyle === null) {
                     throw new Error('Badge datestamp time style invalid.');
                 }
@@ -4918,7 +4949,15 @@ async function run() {
     }
 }
 exports.run = run;
-function stringToBadgeTypeEnum(value) {
+/**
+ * Converts the supplied string to BadgeType.
+ *
+ * Returns null if string cannot be converted to BadgeType.
+ *
+ * @param {string} value - The string value to convert to BadgeType.
+ * @return {*}  {(BadgeType | null)}
+ */
+function stringToBadgeType(value) {
     const uc = (value ?? '').toUpperCase().trim();
     if (Object.values(BadgeType).findIndex(x => x === uc) >= 0) {
         return uc;
@@ -4927,7 +4966,17 @@ function stringToBadgeTypeEnum(value) {
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
-function stringToBadgeStyleTypeEnum(value) {
+/**
+ * Converts the supplied string to BadgeStyleType.
+ *
+ * Returns BadgeStyleType.FOR_THE_BADGE if string is an empty string.
+ *
+ * Returns null if string cannot be converted to BadgeStyleType.
+ *
+ * @param {string} value - The string value to convert to BadgeStyleType.
+ * @return {*}  {(BadgeStyleType | null)}
+ */
+function stringToBadgeStyleType(value) {
     const style = (value ?? '').toLowerCase().trim();
     if (style === '') {
         return BadgeStyleType.FOR_THE_BADGE;
@@ -4939,6 +4988,16 @@ function stringToBadgeStyleTypeEnum(value) {
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
+/**
+ * Converts the supplied string to BadgeDatestampFormatType.
+ *
+ * Returns BadgeDatestampFormatType.ENGLISH_UNITED_STATES if string is an empty string.
+ *
+ * Returns null if string cannot be converted to BadgeDatestampFormatType.
+ *
+ * @param {string} value - The string value to convert to BadgeDatestampFormatType.
+ * @return {*}  {(BadgeDatestampFormatType | null)}
+ */
 function stringToBadgeDatestampFormatType(value) {
     // Do not change case of the original value
     const format = (value ?? '').trim();
@@ -4946,12 +5005,22 @@ function stringToBadgeDatestampFormatType(value) {
         return BadgeDatestampFormatType.ENGLISH_UNITED_STATES;
     }
     else if (Object.values(BadgeDatestampFormatType).findIndex(x => x === format) >= 0) {
-        return value.trim();
+        return format;
     }
     // Return a null if supplied value is not found in list of supported formats to
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
+/**
+ * Converts the supplied string to BadgeDatestampTimezoneType.
+ *
+ * Returns BadgeDatestampTimezoneType.UTC if string is an empty string.
+ *
+ * Returns null if string cannot be converted to BadgeDatestampTimezoneType.
+ *
+ * @param {string} value - The string value to convert to BadgeDatestampTimezoneType.
+ * @return {*}  {(BadgeDatestampTimezoneType | null)}
+ */
 function stringToBadgeDatestampTimezoneType(value) {
     // Do not change case of the original value
     const timezone = (value ?? '').trim();
@@ -4966,7 +5035,17 @@ function stringToBadgeDatestampTimezoneType(value) {
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
-function stringToBadgeStyleDateStyleEnum(value) {
+/**
+ * Converts the supplied string to BadgeDatestampDateStyleType.
+ *
+ * Returns BadgeDatestampDateStyleType.MEDIUM if string is an empty string.
+ *
+ * Returns null if string cannot be converted to BadgeDatestampDateStyleType.
+ *
+ * @param {string} value - The string value to convert to BadgeDatestampDateStyleType.
+ * @return {*}  {(BadgeDatestampDateStyleType | null)}
+ */
+function stringToBadgeStyleDateStyle(value) {
     const style = (value ?? '').toLowerCase().trim();
     if (style === '') {
         return BadgeDatestampDateStyleType.MEDIUM;
@@ -4978,7 +5057,17 @@ function stringToBadgeStyleDateStyleEnum(value) {
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
-function stringToBadgeStyleTimeStyleEnum(value) {
+/**
+ * Converts the supplied string to BadgeDatestampTimeStyleType.
+ *
+ * Returns BadgeDatestampTimeStyleType.LONG if string is an empty string.
+ *
+ * Returns null if string cannot be converted to BadgeDatestampTimeStyleType.
+ *
+ * @param {string} value - The string value to convert to BadgeDatestampTimeStyleType.
+ * @return {*}  {(BadgeDatestampTimeStyleType | null)}
+ */
+function stringToBadgeStyleTimeStyle(value) {
     const style = (value ?? '').toLowerCase().trim();
     if (style === '') {
         return BadgeDatestampTimeStyleType.LONG;
@@ -4990,15 +5079,37 @@ function stringToBadgeStyleTimeStyleEnum(value) {
     // indicate to the dev the value they are supplying is invalid.
     return null;
 }
+/**
+ * Validates the supplied value is not null, not undefined and not an empty string. If value is valid,
+ * the value is returned trimmed, i.e. without leading/trailing spaces.
+ *
+ * @param {(string | null)} value - The value to validate.
+ * @param {string} name - Descriptive name of the value to validate to be used in error message.
+ * @return {*}  {string}
+ */
 function validateValue(value, name) {
     if (value === null || value === undefined || value.trim().length === 0) {
         throw new Error(`A ${name} is required.`);
     }
     return value.trim();
 }
+/**
+ * Validates the supplied value is not null, not undefined and not an empty string. If value is valid,
+ * the value is returned trimmed, i.e. without leading/trailing spaces.
+ *
+ * @param {(string | null)} value - The value to validate.
+ * @return {*}  {string}
+ */
 function validateInputLabel(value) {
     return validateValue(value, 'label');
 }
+/**
+ * Validates the supplied value is not null, not undefined and not an empty string. If value is valid,
+ * the value is returned trimmed, i.e. without leading/trailing spaces.
+ *
+ * @param {(string | null)} value - The value to validate.
+ * @return {*}  {string}
+ */
 function validateInputMessage(value) {
     return validateValue(value, 'message');
 }
