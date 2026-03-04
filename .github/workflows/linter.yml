@@ -59,3 +59,8 @@ jobs:
           # Use Prettier/TypeScript-ESLint only; disable Standard style linters
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_TYPESCRIPT_STANDARD: false
+
+          # n/no-missing-import fires in super-linter's ESLint v9 flat-config context
+          # because it cannot resolve .ts extensions. TypeScript is linted locally
+          # via 'npm run lint' in the CI workflow.
+          VALIDATE_TYPESCRIPT_ES: false

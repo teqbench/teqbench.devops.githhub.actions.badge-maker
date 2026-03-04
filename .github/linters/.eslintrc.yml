@@ -45,14 +45,12 @@ rules:
     'no-unused-vars': 'off',
     'prettier/prettier': 'error',
     'semi': 'off',
-    # Disable n/ module-resolution rules: TypeScript imports use .ts extensions
-    # which the Node resolver does not find without TS-aware configuration.
     'n/no-missing-import': 'off',
     'n/no-missing-require': 'off',
     'n/no-unpublished-import': 'off',
     'n/no-unpublished-require': 'off',
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": "error",
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/array-type': 'error',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/ban-ts-comment': 'error',
@@ -83,5 +81,5 @@ rules:
     '@typescript-eslint/promise-function-async': 'error',
     '@typescript-eslint/require-array-sort-compare': 'error',
     '@typescript-eslint/restrict-plus-operands': 'error',
-    '@typescript-eslint/unbound-method': 'error'
+    '@typescript-eslint/unbound-method': 'error',
   }
