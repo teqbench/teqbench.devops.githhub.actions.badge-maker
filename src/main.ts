@@ -46,7 +46,7 @@ enum BadgeStyleType {
 
 /**
  * Supported datetime locale formats. Add to library as needed; for now start
- * with small set to verify funcitonality.
+ * with small set to verify functionality.
  *
  * @enum {number}
  */
@@ -57,7 +57,7 @@ enum BadgeDatestampFormatType {
 
 /**
  * Supported datetime locale formats. Add to library as needed; for now start
- * with small set to verify funcitonality.
+ * with small set to verify functionality.
  *
  * @enum {number}
  */
@@ -121,7 +121,7 @@ export async function run(): Promise<void> {
     const inputMessage: string = core.getInput('message')
     const inputBadgeStyleType: string = core.getInput('badge-style')
 
-    // TypeScript does not have anyting like ENUM.TryParse and does not throw an
+    // TypeScript does not have anything like ENUM.TryParse and does not throw an
     // error when trying to cast a string to the enum. Created stringToEnum as a workaround
     // to convert a string to an enum. If fails, returns a null.
     const badgeType: BadgeType | null = stringToBadgeType(inputBadgeType)
@@ -315,7 +315,7 @@ export async function run(): Promise<void> {
 function stringToBadgeType(value: string): BadgeType | null {
   const uc: string = (value ?? '').toUpperCase().trim()
 
-  if (Object.values(BadgeType).findIndex(x => x === uc) >= 0) {
+  if (Object.values(BadgeType).includes(uc as BadgeType)) {
     return uc as BadgeType
   }
 
@@ -339,7 +339,7 @@ function stringToBadgeStyleType(value: string): BadgeStyleType | null {
 
   if (style === '') {
     return BadgeStyleType.FOR_THE_BADGE
-  } else if (Object.values(BadgeStyleType).findIndex(x => x === style) >= 0) {
+  } else if (Object.values(BadgeStyleType).includes(style as BadgeStyleType)) {
     return style as BadgeStyleType
   }
 
@@ -367,7 +367,9 @@ function stringToBadgeDatestampFormatType(
   if (format === '') {
     return BadgeDatestampFormatType.ENGLISH_UNITED_STATES
   } else if (
-    Object.values(BadgeDatestampFormatType).findIndex(x => x === format) >= 0
+    Object.values(BadgeDatestampFormatType).includes(
+      format as BadgeDatestampFormatType
+    )
   ) {
     return format as BadgeDatestampFormatType
   }
@@ -396,8 +398,9 @@ function stringToBadgeDatestampTimezoneType(
   if (timezone === '') {
     return BadgeDatestampTimezoneType.UTC
   } else if (
-    Object.values(BadgeDatestampTimezoneType).findIndex(x => x === timezone) >=
-    0
+    Object.values(BadgeDatestampTimezoneType).includes(
+      timezone as BadgeDatestampTimezoneType
+    )
   ) {
     return timezone as BadgeDatestampTimezoneType
   }
@@ -425,7 +428,9 @@ function stringToBadgeStyleDateStyle(
   if (style === '') {
     return BadgeDatestampDateStyleType.MEDIUM
   } else if (
-    Object.values(BadgeDatestampDateStyleType).findIndex(x => x === style) >= 0
+    Object.values(BadgeDatestampDateStyleType).includes(
+      style as BadgeDatestampDateStyleType
+    )
   ) {
     return style as BadgeDatestampDateStyleType
   }
@@ -453,7 +458,9 @@ function stringToBadgeStyleTimeStyle(
   if (style === '') {
     return BadgeDatestampTimeStyleType.LONG
   } else if (
-    Object.values(BadgeDatestampTimeStyleType).findIndex(x => x === style) >= 0
+    Object.values(BadgeDatestampTimeStyleType).includes(
+      style as BadgeDatestampTimeStyleType
+    )
   ) {
     return style as BadgeDatestampTimeStyleType
   }

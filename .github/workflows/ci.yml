@@ -18,6 +18,8 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         id: setup-node
@@ -50,6 +52,8 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Test Local Action
         id: test-action
@@ -62,4 +66,7 @@ jobs:
 
       - name: Print Output
         id: output
-        run: echo '${{ steps.test-action.outputs.svg }}'
+        # Use env var to avoid template-injection risk from action output
+        env:
+          SVG_OUTPUT: ${{ steps.test-action.outputs.svg }}
+        run: echo "$SVG_OUTPUT"
